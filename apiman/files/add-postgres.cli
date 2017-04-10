@@ -1,0 +1,2 @@
+module add --name=org.postgresql --slot=main --resources=/opt/jboss/wildfly/postgresql-9.4-1201-jdbc41.jar --dependencies=javax.api,javax.transaction.api
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-name="postgresql",driver-module-name="org.postgresql",driver-class-name=org.postgresql.Driver)

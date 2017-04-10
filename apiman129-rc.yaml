@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: apiman129-rc
+spec:
+  replicas: 1
+  selector:
+      app: apiman129-rc
+  template:
+    metadata:
+      name: apiman129-rc
+      labels:
+        app: apiman129-rc
+    spec: 
+      containers:
+      - name: apiman
+        image: webalexx/apiman
+        imagePullPolicy: Always
+             
+        ports:
+        - containerPort: 8080
+          name: apiman1
+        - containerPort: 8443         
+          name: apiman2
+        volumeMounts:
+        - name: apiman-pv
+          mountPath: /opt/jboss/wildfly/standalon/data
+          readOnly: false
+       
+      - name: postgres
+        image: webalexx/postgesql
+        imagePullPolicy: Always
+        environment:
+        - POSTGRES_DB=apiman
+        - POSTGRES_USER=apiman
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_ROOT_PASSWORD=postgres
+        - PGDATA= /var/lib/postgresql/data/pgdata
+            
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: apiman-pv
+          mountPath: /opt/jboss/wildfly/standalon/data
+        - name: apiman-pv
+          mountPath: /etc/postgres-credentials
+          readOnly: false
+      volumes:
+      - name: apiman-pv
+        azureDisk:
+          diskName: p0-pd-apiman-postgres.vhd
+          diskURI: https://p0sa8scustom1.blob.core.windows.net/vhds/p0-pd-apiman-postgres.vhd
+          FSType: ext4
+          CachingMode: None
+          ReadOnly: false
+      
+

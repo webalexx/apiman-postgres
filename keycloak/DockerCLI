@@ -1,0 +1,35 @@
+1) docker run -it -d -p 5432:5432 --name postgres -e POSTGRES_DATABASE=keycloak -e POSTGRES_USER=keycloak -e POSTGRES_PASSWORD=keycloak -e POSTGRES_ROOT_PASSWORD=keycloak -d postgres
+
+2) docker run --rm -it -p 9990:9990 -p 8080:8080 --name keycloak --link postgres:postgres -e POSTGRES_DATABASE=keycloak -e POSTGRES_USER=keycloak -e POSTGRES_PASSWORD=keycloak webalexx/keyloack
+
+
+
+3) docker run -it -d -p 5432:5432 --name apiman_gateway -e POSTGRES_DB=apiman_gateway -e POSTGRES_USER=apiman -e POSTGRES_PASSWORD=apiman youngkoss/postgres.1.2.9:ag
+
+
+name: POSTGRES_USER
+               value: apiman
+             - name: POSTGRES_PASSWORD
+               value: apiman_gateway
+             - name: POSTGRES_DB
+               value: apiman_gateway
+               
+             
+               
+docker run -it -d -p 5432:5432 --name apiman_manager -e POSTGRES_DB=apiman_manager -e POSTGRES_USER=apiman -e POSTGRES_PASSWORD=apiman youngkoss/postgres.1.2.9:am                 
+- name: POSTGRES_USER
+               value: apiman
+             - name: POSTGRES_PASSWORD
+               value: apiman
+             - name: POSTGRES_DB
+               value: apiman_manager
+               
+               
+               
+4) docker  run -it -d -p 9990:9990 -p 8080:8080 --link youngkoss/apiman:g1.2.9.Final,youngkoss/postgres.1.2.9:am  youngkoss/apiman:m.1.2.9.Final 
+
+docker run -it -p 9991:9990 -p 8081:8080 youngkoss/apiman:g1.2.9.Final
+               
+               
+               
+               

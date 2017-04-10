@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+	<datasource jndi-name="java:jboss/datasources/${env.POSTGRES_DATABASE}"
+		pool-name="${env.POSTGRES_DATABASE}" enabled="true" use-java-context="true">
+		<connection-url>jdbc:postgresql://${env.POSTGRES_PORT_5432_TCP_ADDR}:${env.POSTGRES_PORT_5432_TCP_PORT}/${env.POSTGRES_DATABASE}
+		</connection-url>
+		<driver>postgresql-9.3-1102-jdbc41.jar</driver>
+		<pool>
+			<max-pool-size>30</max-pool-size>
+		</pool>
+		<security>
+			<user-name>${env.POSTGRES_USER:apiman-gateway}</user-name>
+			<password>${env.POSTGRES_PASSWORD:password}</password>
+		</security>
+		<validation>
+			<check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+			<background-validation>true</background-validation>
+			<background-validation-millis>60000</background-validation-millis>
+		</validation>
+	</datasource>
+</datasources>

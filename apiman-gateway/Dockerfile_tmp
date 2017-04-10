@@ -1,0 +1,69 @@
+FROM jboss/keycloak:3.0.0.Final
+
+
+RUN /opt/jboss/keycloak/bin/add-user-keycloak.sh -u keycloak -p keycloak
+
+ADD changeDatabase.xsl /opt/jboss/keycloak/
+RUN java -jar /usr/share/java/saxon.jar -s:/opt/jboss/keycloak/standalone/configuration/standalone.xml -xsl:/opt/jboss/keycloak/changeDatabase.xsl -o:/opt/jboss/keycloak/standalone/configuration/standalone.xml; java -jar /usr/share/java/saxon.jar -s:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml -xsl:/opt/jboss/keycloak/changeDatabase.xsl -o:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml; rm /opt/jboss/keycloak/changeDatabase.xsl
+RUN mkdir -p /opt/jboss/keycloak/modules/system/layers/base/org/postgresql/jdbc/main; cd /opt/jboss/keycloak/modules/system/layers/base/org/postgresql/jdbc/main; curl -O http://central.maven.org/maven2/org/postgresql/postgresql/9.3-1102-jdbc3/postgresql-9.3-1102-jdbc3.jar
+ADD postgresql-9.3-1102-jdbc41.jar /opt/jboss/keycloak/modules/system/layers/base/org/postgresql/jdbc/main
+ADD module.xml /opt/jboss/keycloak/modules/system/layers/base/org/postgresql/jdbc/main/
+
+
+
+
+FROM jboss/wildfly:10.0.0.Final
+
+MAINTAINER webalexx <webalexx@gmail.com>
+
+
+ ENV APIMAN_VERSION 1.2.9.Final
+
+
+# Load and deploy apiman
+ RUN cd $JBOSS_HOME \
+  && curl http://downloads.jboss.org/overlord/apiman/$APIMAN_VERSION/apiman-distro-wildfly10-$APIMAN_VERSION-overlay.zip -o apiman-distro-wildfly10-$APIMAN_VERSION-overlay.zip \
+  && bsdtar -xf apiman-distro-wildfly10-$APIMAN_VERSION-overlay.zip \
+  && rm apiman-distro-wildfly10-$APIMAN_VERSION-overlay.zip
+
+
+#RUN cd $JBOSS_HOME \
+# && curl http://downloads.jboss.org/apiman/$APIMAN_VERSION/apiman-distro-wildfly10-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
+ 
+ 
+# Add default user
+RUN $JBOSS_HOME/bin/add-user.sh admin admin --silent
+
+
+
+# Apiman properties
+ADD files/apiman.properties $JBOSS_HOME/standalone/configuration/
+RUN  sed -i -e 's/H2Dialect/PostgreSQLDialect/g' $JBOSS_HOME/standalone/configuration/standalone-apiman.xml
+
+
+# SSL
+ADD apiman.jks $JBOSS_HOME/standalone/configuration/
+
+
+# Postgres
+ADD files/postgresql-9.4-1201-jdbc41.jar $JBOSS_HOME/standalone/deployments
+
+
+# Add apiman-ds.xml.xml
+ADD files/apiman-ds.xml $JBOSS_HOME/standalone/deployments
+
+
+# Add standalone-apiman.xml
+ADD files/standalone-apiman.xml $JBOSS_HOME/standalone/configuration/
+
+# Disable builtin Elasticsearch
+RUN rm -f $JBOSS_HOME/standalone/deployments/apiman-es*
+
+
+# Default wildfly debug port  
+EXPOSE 8787
+
+
+ENTRYPOINT ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0", "-c", "standalone-apiman.xml"]
+#CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0", "-c", "standalone-apiman.xml", "--debug"]
+

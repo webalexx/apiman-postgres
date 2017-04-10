@@ -1,0 +1,33 @@
+db:
+    image: webalexx/keyloack
+    environment:
+        - POSTGRES_DATABASE=keyloack
+        - POSTGRES_USER=keyloack
+        - POSTGRES_PASSWORD=keyloack
+        - KEYCLOAK_LOGLEVEL=‘DEBUG’
+        - POSTGRES_PORT_5432_TCP_ADDR = ‘localhost’
+        - POSTGRES_PORT_5432_TCP_PORT = 5432
+           
+
+apiman:
+    image: youngkoss/apiman:m.1.2.9.Final
+    ports:
+      - "8081:8080"
+    
+
+apiman-gateway:
+    #image: jboss/apiman-wildfly-admin
+    image: webalexx/keyloack
+    environment:
+        - GATEWAY_ADDRESS=https://localhost:9090/apiman-gateway
+    links:
+        - db:postgres
+    #    - elastic:es
+    ports:
+        - "8080:8080"
+        - "9990:9990"
+        - "9090:9090"
+        - "8443:443"
+        - "443:443"
+        - "8787:8787"
+
