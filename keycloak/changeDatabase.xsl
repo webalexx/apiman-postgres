@@ -11,7 +11,7 @@
         <ds:datasource jndi-name="java:jboss/datasources/${env.POSTGRES_DATABASE}" enabled="true" use-java-context="true" pool-name="${env.POSTGRES_DATABASE}" use-ccm="true">
             <ds:connection-url>jdbc:postgresql://${env.POSTGRES_PORT_5432_TCP_ADDR}:${env.POSTGRES_PORT_5432_TCP_PORT:5432}/${env.POSTGRES_DATABASE:keycloak}</ds:connection-url>
             <ds:driver>postgresql</ds:driver>
-            <ds:security>
+            <ds:security>  
               <ds:user-name>${env.POSTGRES_USER}</ds:user-name>
               <ds:password>${env.POSTGRES_PASSWORD}</ds:password>
             </ds:security>
