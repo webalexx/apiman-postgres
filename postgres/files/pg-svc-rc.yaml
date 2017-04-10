@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: postgresag
+  name: postgresag
+spec:
+  ports:
+    - port: 5432
+      name: http
+      targetPort: 5432
+  selector:
+    app: postgresag
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    app: postgresag
+  name: postgresag
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresag
+    spec:
+      containers:
+        - name: postgresag
+          image: youngkoss/postgres.1.2.9:ag
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5432
+              name: postgresag
+          env:
+              - name: POSTGRES_USER
+                value: apiman
+              - name: POSTGRES_PASSWORD
+                value: apiman_gateway
+              - name: POSTGRES_DB
+                value: apiman_gateway
+              - name: PGDATA
+                value: /var/lib/postgresql/data/agpgdata
+          volumeMounts:
+            - name: p0-pd-apiman
+              mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: p0-pd-apiman
+        persistentVolumeClaim:
+              claimName: nexus-storage
