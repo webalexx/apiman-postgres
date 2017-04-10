@@ -6,6 +6,7 @@
 
     <xsl:output method="xml" indent="yes"/>
 
+
     <xsl:template match="//ds:subsystem/ds:datasources/ds:datasource[@jndi-name='java:jboss/datasources/${env.POSTGRES_DATABASE}']">
         <ds:datasource jndi-name="java:jboss/datasources/${env.POSTGRES_DATABASE}" enabled="true" use-java-context="true" pool-name="${env.POSTGRES_DATABASE}" use-ccm="true">
             <ds:connection-url>jdbc:postgresql://${env.POSTGRES_PORT_5432_TCP_ADDR}:${env.POSTGRES_PORT_5432_TCP_PORT:5432}/${env.POSTGRES_DATABASE:keycloak}</ds:connection-url>
