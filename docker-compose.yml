@@ -15,7 +15,6 @@ keyloack:
       - POSTGRES_DATABASE=apiman_gateway
       - POSTGRES_USER=apiman      
       - POSTGRES_PASSWORD=apiman
-      - KEYCLOAK_LOGLEVEL=DEBUG
       - POSTGRES_PORT_5432_TCP_ADDR = 192.168.99.100
       - POSTGRES_PORT_5432_TCP_PORT = 5432
     links:
