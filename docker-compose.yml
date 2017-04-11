@@ -40,10 +40,10 @@ apiman:
       - "8081:8080"
 
 
-elastic: 
-    image: elasticsearch
-    ports:
-     - "9200:9200"
+#elastic: 
+#    image: elasticsearch
+#    ports:
+#     - "9200:9200"
 
       
 apiman-gateway:
@@ -60,7 +60,7 @@ apiman-gateway:
       - ELASTIC_ADDRESS=localhost
     links:
       - apiman-gateway-db:apiman-gateway-db
-      - elastic:elastic
+#      - elastic:elastic
       - keyloack
     ports:
       - "8080:8080"
