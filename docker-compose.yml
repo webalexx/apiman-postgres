@@ -15,12 +15,15 @@ keyloack:
       - POSTGRES_DATABASE=apiman_gateway
       - POSTGRES_USER=apiman      
       - POSTGRES_PASSWORD=apiman
-      - POSTGRES_PORT_5432_TCP_ADDR = 192.168.99.100
-      - POSTGRES_PORT_5432_TCP_PORT = 5432
+      - POSTGRES_PORT_5432_TCP_ADDR=172.17.0.2
+      - POSTGRES_PORT_5432_TCP_PORT=5432
+      - KEYCLOAK_USER=keycloak1
+      - KEYCLOAK_PASSWORD=keycloak1
     links:
       - apiman-gateway-db
     ports:
-      - "8082:8080"  
+      - "8080:8080"  
+      - "9990:9990"
       
 
 apiman:
@@ -30,13 +33,14 @@ apiman:
       - POSTGRES_USER=apiman      
       - POSTGRES_PASSWORD=apiman
       - KEYCLOAK_LOGLEVEL=DEBUG
-      - POSTGRES_PORT_5432_TCP_ADDR = 192.168.99.100
+      - POSTGRES_PORT_5432_TCP_ADDR = 172.17.0.2
       - POSTGRES_PORT_5432_TCP_PORT = 5432
     links:
       - apiman-gateway-db
       - keyloack
     ports:
       - "8081:8080"
+
 
 
 #elastic: 
@@ -51,7 +55,7 @@ apiman-gateway:
       - POSTGRES_DATABASE="apiman_gateway"
       - POSTGRES_USER="apiman"      
       - POSTGRES_PASSWORD="apiman"
-      - POSTGRES_PORT_5432_TCP_ADDR = "192.168.99.100"
+      - POSTGRES_PORT_5432_TCP_ADDR = 172.17.0.2
       - POSTGRES_PORT_5432_TCP_PORT = 5432
       - KEYCLOAK_LOGLEVEL=DEBUG
       - GATEWAY_ADDRESS=http://192.168.99.100:8080/apiman-gateway
@@ -62,8 +66,7 @@ apiman-gateway:
 #      - elastic:elastic
       - keyloack
     ports:
-      - "8080:8080"
-      - "9990:9990"
+      - "8082:8080"
       - "8443:443"
       - "443:443"
       - "8787:8787"
