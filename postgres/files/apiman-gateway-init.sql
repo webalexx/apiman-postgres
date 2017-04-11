@@ -18,3 +18,4 @@ CREATE TABLE gw_requests (
 CREATE INDEX IDX_gw_requests_1 ON gw_requests(api_org_id, api_id, api_version);
 CREATE INDEX IDX_gw_requests_2 ON gw_requests(client_org_id, client_id, client_version);
 CREATE INDEX IDX_gw_requests_3 ON gw_requests(resp_type);
+
